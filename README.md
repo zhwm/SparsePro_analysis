@@ -1,4 +1,4 @@
-# Ananlysis performed in the SparsePro paper
+# Analysis performed in the SparsePro paper
 
 This repo contains scripts for:
 
