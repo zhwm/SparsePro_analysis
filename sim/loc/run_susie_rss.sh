@@ -7,3 +7,8 @@ st2=`date +%s.%N`
 python ../../susie_rss.py --zld zld --zdir . --N 353570 --K ${4} --save susie_rss --prefix susie_rss --verbose
 ed2=`date +%s.%N`
 echo $(echo $ed2-$st2 | bc -l) > susie_rss.time
+
+st2=`date +%s.%N`
+python ../../susie_sparsepro.py --zld zld --zdir . --N 353570 --K ${4} --save susie_sparsepro --prefix susie_sparsepro --verbose
+ed2=`date +%s.%N`
+echo $(echo $ed2-$st2 | bc -l) > susie_sparsepro.time

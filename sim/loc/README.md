@@ -1,11 +1,11 @@
 # Locus simulation procedures
 
-## extract genotype and annotation information
+## Extract genotype and annotation information
 ```
 ./get_block.sh CHR ST ED
 ```
 
-## simulate traits and perform GWAS
+## Simulate traits and perform GWAS
 ```
 ./get_simulation.sh CHR ST ED K W
 ```
