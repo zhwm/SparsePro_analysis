@@ -208,6 +208,13 @@ def ukb(args):
     else:
         print("Please choose either statistical fine-mapping or annotated fine-mapping")
         sys.exit()
+    if args.wdir is not None:
+        print("Annotation weights loaded at {}".format(time.strftime("%Y-%m-%d %H:%M")))
+        new_weight = pd.read_csv(args.wdir, sep="\s+")
+        new_weight['index'] = new_weight['CHR'].astype(str) + '.' + new_weight['BP'].astype(str) + '.' + new_weight['A2'] + '.' + new_weight['A1']
+        new_weights = new_weight['SNPVAR']
+        new_weights.index = new_weight['index']
+        poly_weight_vec = []
     z = pd.read_csv(args.zdir, sep="\t", header=None, index_col=0)  # no header, first column idx(chr.pos.ref.alt)
     print("Summary statistics loaded at {}\n".format(time.strftime("%Y-%m-%d %H:%M")))
     ldlists = pd.read_csv(args.ukb, sep='\t')  # header with 3 columns
@@ -228,6 +235,11 @@ def ukb(args):
             new_pi = softmax(np.dot(ANN, W_new))
             model.update_pi(new_pi)
             new_pi_vec.extend([new_pi[i] for i in effidx])
+        if args.wdir is not None:
+            poly_weight = np.array([new_weights.get(i, np.min(new_weights)) for i in idx])
+            poly_weight_n = poly_weight/sum(poly_weight)
+            model.update_pi(poly_weight_n)
+            poly_weight_vec.extend([poly_weight_n[i] for i in effidx])
         model.train(XX, ytX, XtX, verbose=args.verbose)
         mcs, eff_gamma, eff_mu = model.get_effect(args.cthres, args.ethres)
         pip_vec = model.get_PIP().round(4)
@@ -259,6 +271,11 @@ def ukb(args):
                                "z": z_vec,
                                "pip": pip,
                                "prior": new_pi_vec})
+    elif args.wdir is not None:
+        allPIP = pd.DataFrame({"idx": pip_name,
+                               "z": z_vec,
+                               "pip": pip,
+                               "prior": poly_weight_vec})
     else:
         allPIP = pd.DataFrame({"idx": pip_name,
                                "z": z_vec,
@@ -278,6 +295,7 @@ parser.add_argument('--LDdir', type=str, default=None, help='path to ld files', 
 parser.add_argument('--N', type=int, default=None, help='GWAS sample size', required=True)
 parser.add_argument('--save', type=str, default=None, help='path to save result', required=True)
 parser.add_argument('--prefix', type=str, default=None, help='prefix for result files', required=True)
+parser.add_argument('--wdir', type=str, default=None, help='path to weight files')
 parser.add_argument('--verbose', action="store_true", help='options for displaying more information')
 parser.add_argument('--anno', type=str, default=None, help='path to annotation file')
 parser.add_argument('--K', type=int, default=None, help='largest number of effect')
