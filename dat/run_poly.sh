@@ -1,15 +1,3 @@
-date
-
-st1=`date +%s.%N`
-
-#conda activate polyfun
-
-python ~/utils/polyfun/munge_polyfun_sumstats.py --sumstats ${1} --out poly.parquet
-
-python ~/utils/polyfun/polyfun.py --compute-h2-L2 --output-prefix poly --sumstats poly.parquet --ref-ld-chr ~/scratch/SparsePro/POLY/baselineLF2.2.UKB/baselineLF2.2.UKB. --w-ld-chr ~/scratch/SparsePro/POLY/baselineLF2.2.UKB/weights.UKB. --allow-missing
-
-ed1=`date +%s.%N`
-
-echo POLYFUN taking $(echo $ed1-$st1 | bc -l) seconds
-
-date
+source ~/py3/bin/activate
+cd GWAS/${1}
+python ../../sparsepro_poly.py --h2 --ukb sparsepro/${1}_${2}.h2 --zdir ${1}_${2}.z --N $(cat ${1}.N) --save sparsepro_poly --prefix ${1}_${2} --verbose --LDdir ~/scratch/UKBBLD/ --wdir polyfun/poly.${2}.snpvar_ridge_constrained.gz

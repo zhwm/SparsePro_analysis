@@ -1,22 +1,28 @@
 # Fine-mapping five biomarker of vital organs
 
-## perform GWAS
+### 0. Perform GWAS
 ```
 ./process_pheno.R
 for i in eGFR FFR gammaGT glucose prate; do sed "s/TRAIT/$i/g" run_TRAIT.sh > run_$i\.sh; done
 ```
 
-## perform fine-mapping with GWAS summary statistics with SparsePro- and SuSiE
+### 1. Perform fine-mapping with GWAS summary statistics with SparsePro-
 ```
-for i in eGFR FFR gammaGT glucose prate; do for j in $(seq 1 22); do sed "s/TRAIT/$i/g" run_TRAIT_GENO_no.sh | sed "s/GENO/$j/g" > run_$i\.sh; done; done
-```
-
-## run POLYFUN based LDSC to calculate functional enrichment
-```
-for i in eGFR FFR gammaGT glucose prate; do ./run_POLY.sh $i\_fastgwalr.fastGWA > run_$i\.sh; done
+for i in eGFR FFR gammaGT glucose prate; do for j in $(seq 1 22); do ./run_sparsepro.sh $i $j; done; done
 ```
 
-## integrating GWAS summary statistics and functional annotation with SparsePro+ and SuSiE+POLY
+### 2. Run POLYFUN based LDSC to calculate functional enrichment
 ```
-for i in eGFR FFR gammaGT glucose prate; do for j in $(seq 1 22); do sed "s/TRAIT/$i/g" run_TRAIT_GENO_no.sh | sed "s/GENO/$j/g" > run_$i\.sh; done; done
+for i in eGFR FFR gammaGT glucose prate; do ./prepare_poly.sh $i; done
+```
+
+### 3. Estimate functional enrichment with SparsePro
+```
+for i in eGFR FFR gammaGT glucose prate; do ./run_enrich_baseline.sh $i sparsepro; done
+```
+
+### 4. Integrate GWAS summary statistics and functional annotation with SparsePro+ and SparsePro+PolyFun
+```
+for i in eGFR FFR gammaGT glucose prate; do for j in $(seq 1 22); do ./run_baseline.sh $i $j; done; done
+for i in eGFR FFR gammaGT glucose prate; do for j in $(seq 1 22); do ./run_poly.sh $i $j; done; done
 ```
