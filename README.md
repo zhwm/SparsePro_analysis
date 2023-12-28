@@ -9,5 +9,5 @@ This repo contains scripts for:
 
 For example data and usage of locus fine-mapping with SparsePro, please refer to [SparsePro](https://github.com/zhwm/SparsePro).
 For example data and usage of genome-wide fine-mapping with SparsePro, please refer to [SparsePro_gw](https://github.com/zhwm/SparsePro_gw).
-For more information, please refer to our [preprint](https://doi.org/10.1101/2021.10.04.463133).
+For more information, please refer to our [manuscript](https://doi.org/10.1371/journal.pgen.1011104).
 
